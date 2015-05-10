@@ -1,0 +1,32 @@
+{
+  "name": "auth-rbac-mongoose",
+  "version": "0.0.0",
+  "description": "Mongoose-based backend for auth-rbac",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alex94puchades/auth-rbac-mongoose.git"
+  },
+  "keywords": [
+    "auth",
+    "rbac",
+    "mongodb",
+    "mongoose"
+  ],
+  "author": "Alejandro Caravaca Puchades <alex94puchades@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alex94puchades/auth-rbac-mongoose/issues"
+  },
+  "devDependencies": {
+    "mocha": "~2.2.4",
+    "should": "~6.0.1",
+    "mongoose": "~4.0.2"
+  },
+  "dependencies": {
+    "auth-rbac": "~0.1.8"
+  }
+}
