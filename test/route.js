@@ -14,6 +14,7 @@ describe('Route', function() {
 		describe('field', function() {
 			var route;
 			before(function() {
+				debugger;
 				route = new Route({ field: String }).field('field');
 			});
 
@@ -42,7 +43,7 @@ describe('Route', function() {
 				var fromRoute = new Route({ link: String });
 				var fooSchema = new Schema({ linked: String });
 				Foo = mongoose.model('Foo', fooSchema);
-				route = Route.newFrom(fromRoute).field('link').linkWith('linked').gives(Foo);
+				route = fromRoute.field('link').linkWith('linked').gives(Foo);
 				foo = new Foo({ linked: 'value' });
 				foo.save(done);
 			});
