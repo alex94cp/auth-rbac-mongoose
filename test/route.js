@@ -4,7 +4,6 @@ var Route = rbacAuth.mongoose.Route;
 
 var should = require('should');
 var mongoose = require('mongoose');
-var ObjectId = mongoose.Schema.ObjectId;
 var Schema = mongoose.Schema;
 
 mongoose.connect('mongodb://localhost/test');
@@ -14,37 +13,35 @@ describe('Route', function() {
 		describe('field', function() {
 			var route;
 			before(function() {
-				debugger;
 				route = new Route({ field: String }).field('field');
 			});
 
 			it('should invoke callback with field value', function(done) {
-				route.routeFrom({ field: 'value' }, function(err, fieldValue) {
+				route.routeFrom({ field: 'foo' }, function(err, value) {
 					if (err)
 						return done(err);
-					fieldValue.should.equal('value');
+					value.should.equal('foo');
 					return done();
 				});
 			});
 
 			it('should invoke callback with null otherwise', function(done) {
-				route.routeFrom({}, function(err, fieldValue) {
+				route.routeFrom({}, function(err, value) {
 					if (err)
 						return done(err);
-					(!!fieldValue).should.be.false;
+					(!!value).should.be.false;
 					return done();
 				});
 			});
 		});
 
-		describe('linkWith', function(done) {
+		describe('dbRef', function() {
 			var Foo, foo, route;
 			before(function(done) {
-				var fromRoute = new Route({ link: String });
-				var fooSchema = new Schema({ linked: String });
-				Foo = mongoose.model('Foo', fooSchema);
-				route = fromRoute.field('link').linkWith('linked').gives(Foo);
-				foo = new Foo({ linked: 'value' });
+				var fromRoute = new Route({ id: Schema.ObjectId });
+				Foo = mongoose.model('foo', new Schema);
+				route = fromRoute.field('id').dbRef.gives(Foo);
+				foo = new Foo;
 				foo.save(done);
 			});
 
@@ -53,20 +50,53 @@ describe('Route', function() {
 			});
 
 			it('should invoke callback with correct object', function(done) {
-				route.routeFrom({ link: 'value' }, function(err, foo) {
+				route.routeFrom({ id: foo._id }, function(err, value) {
 					if (err)
 						return done(err);
-					(!!foo).should.be.true;
-					foo.linked.should.equal('value');
+					(!!value).should.be.true;
+					value._id.equals(foo._id).should.be.true;
 					return done();
 				});
 			});
 
 			it('should invoke callback with null otherwise', function(done) {
-				route.routeFrom({ link: 'invalid' }, function(err, foo) {
+				route.routeFrom({ id: new mongoose.Types.ObjectId }, function(err, value) {
 					if (err)
 						return done(err);
-					(!!foo).should.be.false;
+					(!!value).should.be.false;
+					return done();
+				});
+			});
+		});
+
+		describe('linkWith', function() {
+			var Foo, route;
+			before(function(done) {
+				var fromRoute = new Route({ link: String });
+				Foo = mongoose.model('Foo', new Schema({ linked: String }));
+				route = fromRoute.field('link').linkWith('linked').gives(Foo);
+				Foo.create({ linked: 'foo' }, done);
+			});
+
+			after(function(done) {
+				Foo.remove(done);
+			});
+
+			it('should invoke callback with correct object', function(done) {
+				route.routeFrom({ link: 'foo' }, function(err, value) {
+					if (err)
+						return done(err);
+					(!!value).should.be.true;
+					value.linked.should.equal('foo');
+					return done();
+				});
+			});
+
+			it('should invoke callback with null otherwise', function(done) {
+				route.routeFrom({ link: 'invalid' }, function(err, value) {
+					if (err)
+						return done(err);
+					(!!value).should.be.false;
 					return done();
 				});
 			});
