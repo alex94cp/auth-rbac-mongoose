@@ -16,7 +16,7 @@ describe('Route', function() {
 				route = new Route({ field: String }).field('field');
 			});
 
-			it('should invoke callback with field value', function(done) {
+			it('invokes callback with field value', function(done) {
 				route.routeFrom({ field: 'foo' }, function(err, value) {
 					if (err)
 						return done(err);
@@ -25,7 +25,7 @@ describe('Route', function() {
 				});
 			});
 
-			it('should invoke callback with null otherwise', function(done) {
+			it('invokes callback with null otherwise', function(done) {
 				route.routeFrom({}, function(err, value) {
 					if (err)
 						return done(err);
@@ -49,7 +49,7 @@ describe('Route', function() {
 				Foo.remove(done);
 			});
 
-			it('should invoke callback with correct object', function(done) {
+			it('invokes callback with correct object', function(done) {
 				route.routeFrom({ id: foo._id }, function(err, value) {
 					if (err)
 						return done(err);
@@ -59,7 +59,7 @@ describe('Route', function() {
 				});
 			});
 
-			it('should invoke callback with null otherwise', function(done) {
+			it('invokes callback with null otherwise', function(done) {
 				route.routeFrom({ id: new mongoose.Types.ObjectId }, function(err, value) {
 					if (err)
 						return done(err);
@@ -82,7 +82,7 @@ describe('Route', function() {
 				Foo.remove(done);
 			});
 
-			it('should invoke callback with correct object', function(done) {
+			it('invokes callback with correct object', function(done) {
 				route.routeFrom({ link: 'foo' }, function(err, value) {
 					if (err)
 						return done(err);
@@ -92,7 +92,7 @@ describe('Route', function() {
 				});
 			});
 
-			it('should invoke callback with null otherwise', function(done) {
+			it('invokes callback with null otherwise', function(done) {
 				route.routeFrom({ link: 'invalid' }, function(err, value) {
 					if (err)
 						return done(err);
@@ -109,7 +109,7 @@ describe('Route', function() {
 			route = new Route({ field: [String] }).field('field').gives([String]);
 		});
 
-		it('should invoke callback with true if field contains value', function(done) {
+		it('invokes callback with true if field contains value', function(done) {
 			route.checkRoute({ field: ['foo', 'bar'] }, 'foo', function(err, hasValue) {
 				if (err)
 					return done(err);
@@ -118,7 +118,7 @@ describe('Route', function() {
 			});
 		});
 
-		it('should invoke callback with false otherwise', function(done) {
+		it('invokes callback with false otherwise', function(done) {
 			route.checkRoute({ field: ['foo', 'bar'] }, 'invalid', function(err, hasValue) {
 				if (err)
 					return done(err);
