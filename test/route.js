@@ -1,10 +1,12 @@
-var rbacAuth = {};
+var rbacAuth = require('auth-rbac');
 rbacAuth.mongoose = require('../');
 var Route = rbacAuth.mongoose.Route;
 
-var should = require('should');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+
+var chai = require('chai');
+var expect = chai.expect;
 
 mongoose.connect('mongodb://localhost/test');
 
@@ -20,7 +22,7 @@ describe('Route', function() {
 				route.routeFrom({ field: 'foo' }, function(err, value) {
 					if (err)
 						return done(err);
-					value.should.equal('foo');
+					expect(value).to.equal('foo');
 					return done();
 				});
 			});
@@ -29,7 +31,7 @@ describe('Route', function() {
 				route.routeFrom({}, function(err, value) {
 					if (err)
 						return done(err);
-					(!!value).should.be.false;
+					expect(value).to.not.exist;
 					return done();
 				});
 			});
@@ -53,8 +55,11 @@ describe('Route', function() {
 				route.routeFrom({ id: foo._id }, function(err, value) {
 					if (err)
 						return done(err);
-					(!!value).should.be.true;
-					value._id.equals(foo._id).should.be.true;
+					expect(value).to.have.property('_id')
+					             .which.has.to.satisfy(function(id)
+					{
+						return id.equals(foo._id);
+					});
 					return done();
 				});
 			});
@@ -63,7 +68,7 @@ describe('Route', function() {
 				route.routeFrom({ id: new mongoose.Types.ObjectId }, function(err, value) {
 					if (err)
 						return done(err);
-					(!!value).should.be.false;
+					expect(value).to.not.exist;
 					return done();
 				});
 			});
@@ -86,8 +91,7 @@ describe('Route', function() {
 				route.routeFrom({ link: 'foo' }, function(err, value) {
 					if (err)
 						return done(err);
-					(!!value).should.be.true;
-					value.linked.should.equal('foo');
+					expect(value).to.have.property('linked', 'foo');
 					return done();
 				});
 			});
@@ -96,7 +100,7 @@ describe('Route', function() {
 				route.routeFrom({ link: 'invalid' }, function(err, value) {
 					if (err)
 						return done(err);
-					(!!value).should.be.false;
+					expect(value).to.not.exist;
 					return done();
 				});
 			});
@@ -113,7 +117,7 @@ describe('Route', function() {
 			route.checkRoute({ field: ['foo', 'bar'] }, 'foo', function(err, hasValue) {
 				if (err)
 					return done(err);
-				hasValue.should.be.true;
+				expect(hasValue).to.be.true;
 				return done();
 			});
 		});
@@ -122,7 +126,7 @@ describe('Route', function() {
 			route.checkRoute({ field: ['foo', 'bar'] }, 'invalid', function(err, hasValue) {
 				if (err)
 					return done(err);
-				hasValue.should.be.false;
+				expect(hasValue).to.be.false;
 				return done();
 			});
 		});

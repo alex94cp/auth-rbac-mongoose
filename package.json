@@ -23,12 +23,12 @@
     "url": "https://github.com/alex94puchades/auth-rbac-mongoose/issues"
   },
   "devDependencies": {
+    "chai": "^2.3.0",
     "coveralls": "^2.11.2",
     "istanbul": "^0.3.14",
     "mocha": "~2.2.4",
     "mocha-lcov-reporter": "0.0.2",
-    "mongoose": "^4.0.2",
-    "should": "~6.0.1"
+    "mongoose": "^4.0.2"
   },
   "dependencies": {
     "auth-rbac": "~0.1.8"
