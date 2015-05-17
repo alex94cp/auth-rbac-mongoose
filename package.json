@@ -1,6 +1,6 @@
 {
   "name": "auth-rbac-mongoose",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "Mongoose-based backend for auth-rbac",
   "main": "index.js",
   "scripts": {
@@ -26,11 +26,10 @@
     "chai": "^2.3.0",
     "coveralls": "^2.11.2",
     "istanbul": "^0.3.14",
-    "mocha": "~2.2.4",
-    "mocha-lcov-reporter": "0.0.2",
-    "mongoose": "^4.0.2"
+    "mocha": "~2.2.5",
+    "mongoose": "^4.0.3"
   },
   "dependencies": {
-    "auth-rbac": "~0.1.8"
+    "auth-rbac": "~0.2.1"
   }
 }
