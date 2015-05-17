@@ -65,7 +65,8 @@ describe('Route', function() {
 			});
 
 			it('invokes callback with null otherwise', function(done) {
-				route.routeFrom({ id: new mongoose.Types.ObjectId }, function(err, value) {
+				var ObjectId = mongoose.Types.ObjectId;
+				route.routeFrom({ id: new ObjectId }, function(err, value) {
 					if (err)
 						return done(err);
 					expect(value).to.not.exist;
