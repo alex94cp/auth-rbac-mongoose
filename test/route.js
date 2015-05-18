@@ -5,7 +5,7 @@ var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test');
+var db = mongoose.createConnection('mongodb://localhost/test');
 
 var authRbacMongoose = require('../');
 var Route = authRbacMongoose.Route;
@@ -40,20 +40,20 @@ describe('Route', function() {
 			});
 		});
 
-		describe('linkWith', function() {
-			var LinkModel;
+		describe('linkedWith', function() {
+			var LinkedModel;
 			before(function(done) {
-				var linkSchema = new mongoose.Schema({ linkedField: String });
-				LinkModel = mongoose.model('LinkModel', linkSchema);
-				LinkModel.create({ linkedField: 'linked-value' }, done);
+				var linkedSchema = new mongoose.Schema({ linkedField: String });
+				LinkedModel = db.model('LinkedModel', linkedSchema);
+				LinkedModel.create({ linkedField: 'linked-value' }, done);
 			});
 
 			after(function(done) {
-				LinkModel.remove(done);
+				LinkedModel.remove(done);
 			});
 
 			it('invokes callback with mongoose matching document', function(done) {
-				var route = new Route(String).linkWith('linkedField').gives(LinkModel);
+				var route = new Route(String).linkedWith('linkedField').gives(LinkedModel);
 				route.routeFrom('linked-value', function(err, value) {
 					expect(err).to.not.exist;
 					expect(value).to.have.property('linkedField', 'linked-value');
@@ -62,7 +62,7 @@ describe('Route', function() {
 			});
 
 			it('invokes callback with matching documents', function(done) {
-				var route = new Route(String).linkWith('linkedField').gives([LinkModel]);
+				var route = new Route(String).linkedWith('linkedField').gives([LinkedModel]);
 				route.routeFrom('linked-value', function(err, values) {
 					expect(err).to.not.exist;
 					expect(values).to.be.an.instanceof(Array)
@@ -76,7 +76,7 @@ describe('Route', function() {
 			var DbRefModel, output;
 			before(function(done) {
 				var dbRefSchema = new mongoose.Schema;
-				DbRefModel = mongoose.model('DbRefModel', dbRefSchema);
+				DbRefModel = db.model('DbRefModel', dbRefSchema);
 				output = new DbRefModel();
 				output.save(done);
 			});
