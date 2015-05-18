@@ -27,9 +27,9 @@
     "coveralls": "^2.11.2",
     "istanbul": "^0.3.14",
     "mocha": "~2.2.5",
-    "mongoose": "^4.0.3"
-  },
-  "dependencies": {
-    "auth-rbac": "~0.2.1"
+    "mockgoose": "^2.0.1",
+    "mongoose": "^4.0.3",
+    "sinon": "^1.14.1",
+    "sinon-chai": "^2.7.0"
   }
 }
