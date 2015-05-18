@@ -20,7 +20,7 @@ describe('Route', function() {
 	});
 
 	describe('#routeFrom', function() {
-		describe('self', function() {
+		describe('[self]', function() {
 			it('invokes callback with given object', function() {
 				var route = new Route(String);
 				route.routeFrom('expected-value', function(err, value) {
@@ -30,7 +30,7 @@ describe('Route', function() {
 			});
 		});
 
-		describe('field', function() {
+		describe('[field]', function() {
 			it('invokes callback with field from given object', function() {
 				var route = new Route({ fieldName: String }).field('fieldName');
 				route.routeFrom({ fieldName: 'field-value' }, function(err, value) {
@@ -40,7 +40,7 @@ describe('Route', function() {
 			});
 		});
 
-		describe('linkedWith', function() {
+		describe('[linkedWith]', function() {
 			var LinkedModel;
 			before(function(done) {
 				var linkedSchema = new mongoose.Schema({ linkedField: String });
@@ -72,7 +72,7 @@ describe('Route', function() {
 			});
 		});
 
-		describe('dbRef', function() {
+		describe('[dbRef]', function() {
 			var DbRefModel, output;
 			before(function(done) {
 				var dbRefSchema = new mongoose.Schema;
