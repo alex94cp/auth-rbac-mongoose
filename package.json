@@ -1,6 +1,6 @@
 {
   "name": "auth-rbac-mongoose",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Mongoose-based backend for auth-rbac",
   "main": "index.js",
   "scripts": {
