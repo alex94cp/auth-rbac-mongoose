@@ -133,34 +133,37 @@ describe('Route', function() {
 		});
 
 		it('makes #routeFrom invoke callback with value if condition is true', function() {
-			condCallback.callsArgWith(2, null, true);
+			condCallback.callsArgWith(1, null, true);
 			route.routeFrom('expected-value', function(err, value) {
 				expect(err).to.not.exist;
 				expect(value).to.equal('expected-value');
 			});
-			expect(condCallback).to.have.been.calledWith('expected-value');
+			var paramsMatch = sinon.match({ value: 'expected-value' });
+			expect(condCallback).to.have.been.calledWith(paramsMatch);
 		});
 
 		it('makes #routeFrom invoke callback with null if condition is false', function() {
-			condCallback.callsArgWith(2, null, false);
+			condCallback.callsArgWith(1, null, false);
 			route.routeFrom('expected-value', function(err, value) {
 				expect(err).to.not.exist;
 				expect(value).to.not.exist;
 			});
-			expect(condCallback).to.have.been.calledWith('expected-value');
+			var paramsMatch = sinon.match({ value: 'expected-value' });
+			expect(condCallback).to.have.been.calledWith(paramsMatch);
 		});
 	});
 
 	describe('#saveAs', function() {
 		it('makes value available for #assert callbacks', function() {
-			var condCallback = sinon.stub().callsArgWith(2, null, true);
-			var route = new Route(String).saveAs('saved').assert(condCallback);
+			var condCallback = sinon.stub().callsArgWith(1, null, true);
+			var route = new Route(String).saveAs('savedAs').assert(condCallback);
 			route.routeFrom('saved-value', function(err, value, saved) {
 				expect(err).to.not.exist;
 				expect(value).to.equal('saved-value');
 			});
-			var savedMatch = sinon.match({ saved: 'saved-value' });
-			expect(condCallback).to.have.been.calledWith('saved-value', savedMatch);
+			expect(condCallback).to.have.been.calledWith(sinon.match({
+				value: 'saved-value', saved: { savedAs: 'saved-value' }
+			}));
 		});
 	});
 
