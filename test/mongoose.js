@@ -27,7 +27,7 @@ describe('authRbacMongoose', function() {
 	before(function() {
 		sinon.stub(userRoute, 'routeFrom');
 		sinon.stub(roleRoute, 'routeFrom');
-		sinon.stub(privRoute, 'checkRoute');
+		sinon.stub(privRoute, 'routeFrom');
 		authBackend = authRbacMongoose(userRoute, roleRoute, privRoute);
 	});
 
@@ -96,25 +96,25 @@ describe('authRbacMongoose', function() {
 		});
 
 		beforeEach(function() {
-			privRoute.checkRoute.reset();
+			privRoute.routeFrom.reset();
 		});
 
 		it('uses privRoute to check if role has privilege', function() {
-			privRoute.checkRoute.callsArgWith(2, null, true);
+			privRoute.routeFrom.callsArgWith(1, null, ['priv-name']);
 			roleHasPrivilege('role-info', 'priv-name', function(err, hasPriv) {
 				expect(err).to.not.exist;
 				expect(hasPriv).to.be.true;
 			});
-			expect(privRoute.checkRoute).to.have.been.calledWith('role-info', 'priv-name');
+			expect(privRoute.routeFrom).to.have.been.calledWith('role-info');
 		});
 
 		it('propagates privRoute errors', function() {
-			privRoute.checkRoute.callsArgWith(2, new Error);
+			privRoute.routeFrom.callsArgWith(1, new Error);
 			roleHasPrivilege('role-info', 'priv-name', function(err, hasPriv) {
 				expect(err).to.exist;
 				expect(hasPriv).to.not.exist;
 			});
-			expect(privRoute.checkRoute).to.have.been.calledWith('role-info', 'priv-name');
+			expect(privRoute.routeFrom).to.have.been.calledWith('role-info');
 		});
 	});
 });

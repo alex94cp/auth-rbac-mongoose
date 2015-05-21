@@ -166,22 +166,4 @@ describe('Route', function() {
 			}));
 		});
 	});
-
-	describe('#checkRoute', function() {
-		it('invokes callback with true if returned object matches value', function() {
-			var route = new Route(String);
-			route.checkRoute('expected-value', 'expected-value', function(err, match) {
-				expect(err).to.not.exist;
-				expect(match).to.be.true;
-			});
-		});
-
-		it('invokes callback with true if returned array has value', function() {
-			var route = new Route([Number]);
-			route.checkRoute([1,2,3], 1, function(err, hasValue) {
-				expect(err).to.not.exist;
-				expect(hasValue).to.be.true;
-			});
-		});
-	});
 });
