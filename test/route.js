@@ -19,13 +19,97 @@ describe('Route', function() {
 		});
 	});
 
-	describe('#self', function() {
-		it('makes #routeFrom invoke callback with given object', function() {
-			var route = new Route(String);
+	describe('#saveAs', function() {
+		var paramsMatch;
+		before(function() {
+			paramsMatch = sinon.match({
+				value: 'saved-value',
+				saved: { savedAs: 'saved-value' }
+			});
+		});
+
+		it('makes value available for #assert callbacks', function() {
+			var condCallback = sinon.stub().callsArgWith(1, null, true);
+			var route = new Route(String).saveAs('savedAs').assert(condCallback);
+			route.routeFrom('saved-value', function(err, value) {
+				expect(err).to.not.exist;
+				expect(value).to.equal('saved-value');
+			});
+			expect(condCallback).to.have.been.calledWith(paramsMatch);
+		});
+
+		it('makes value available for #filter callbacks', function() {
+			var filterCallback = sinon.stub().callsArgWith(1, null, 'returned-value');
+			var route = new Route(String).saveAs('savedAs').filter(filterCallback);
+			route.routeFrom('saved-value', function(err, value) {
+				expect(err).to.not.exist;
+				expect(value).to.equal('returned-value');
+			});
+			expect(filterCallback).to.have.been.calledWith(paramsMatch);
+		});
+	});
+
+	describe('#filter', function() {
+		var filterCallback, route;
+		before(function() {
+			filterCallback = sinon.stub();
+			route = new Route(String).filter(filterCallback);
+		});
+
+		beforeEach(function() {
+			filterCallback.reset();
+		});
+
+		it('makes #routeFrom invoke callback with return value from filter', function() {
+			filterCallback.callsArgWith(1, null, 'returned-value');
+			route.routeFrom('expected-value', function(err, value) {
+				expect(err).to.not.exist;
+				expect(value).to.equal('returned-value');
+			});
+			var paramsMatch = sinon.match({ value: 'expected-value' });
+			expect(filterCallback).to.have.been.calledWith(paramsMatch);
+		});
+
+		it('propagates filter callback errors', function() {
+			filterCallback.callsArgWith(1, new Error);
+			route.routeFrom('expected-value', function(err, value) {
+				expect(err).to.exist;
+				expect(value).to.not.exist;
+			});
+			var paramsMatch = sinon.match({ value: 'expected-value' });
+			expect(filterCallback).to.have.been.calledWith(paramsMatch);
+		});
+	});
+
+	describe('#assert', function() {
+		var condCallback, route;
+		before(function() {
+			condCallback = sinon.stub();
+			route = new Route(String).assert(condCallback);
+		});
+
+		beforeEach(function() {
+			condCallback.reset();
+		});
+
+		it('makes #routeFrom invoke callback with value if condition is true', function() {
+			condCallback.callsArgWith(1, null, true);
 			route.routeFrom('expected-value', function(err, value) {
 				expect(err).to.not.exist;
 				expect(value).to.equal('expected-value');
 			});
+			var paramsMatch = sinon.match({ value: 'expected-value' });
+			expect(condCallback).to.have.been.calledWith(paramsMatch);
+		});
+
+		it('makes #routeFrom invoke callback with null if condition is false', function() {
+			condCallback.callsArgWith(1, null, false);
+			route.routeFrom('expected-value', function(err, value) {
+				expect(err).to.not.exist;
+				expect(value).to.not.exist;
+			});
+			var paramsMatch = sinon.match({ value: 'expected-value' });
+			expect(condCallback).to.have.been.calledWith(paramsMatch);
 		});
 	});
 
@@ -118,52 +202,6 @@ describe('Route', function() {
 				});
 				return done();
 			});
-		});
-	});
-
-	describe('#assert', function() {
-		var condCallback, route;
-		before(function() {
-			condCallback = sinon.stub();
-			route = new Route(String).assert(condCallback);
-		});
-
-		beforeEach(function() {
-			condCallback.reset();
-		});
-
-		it('makes #routeFrom invoke callback with value if condition is true', function() {
-			condCallback.callsArgWith(1, null, true);
-			route.routeFrom('expected-value', function(err, value) {
-				expect(err).to.not.exist;
-				expect(value).to.equal('expected-value');
-			});
-			var paramsMatch = sinon.match({ value: 'expected-value' });
-			expect(condCallback).to.have.been.calledWith(paramsMatch);
-		});
-
-		it('makes #routeFrom invoke callback with null if condition is false', function() {
-			condCallback.callsArgWith(1, null, false);
-			route.routeFrom('expected-value', function(err, value) {
-				expect(err).to.not.exist;
-				expect(value).to.not.exist;
-			});
-			var paramsMatch = sinon.match({ value: 'expected-value' });
-			expect(condCallback).to.have.been.calledWith(paramsMatch);
-		});
-	});
-
-	describe('#saveAs', function() {
-		it('makes value available for #assert callbacks', function() {
-			var condCallback = sinon.stub().callsArgWith(1, null, true);
-			var route = new Route(String).saveAs('savedAs').assert(condCallback);
-			route.routeFrom('saved-value', function(err, value, saved) {
-				expect(err).to.not.exist;
-				expect(value).to.equal('saved-value');
-			});
-			expect(condCallback).to.have.been.calledWith(sinon.match({
-				value: 'saved-value', saved: { savedAs: 'saved-value' }
-			}));
 		});
 	});
 });
