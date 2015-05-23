@@ -131,8 +131,8 @@ describe('Route', function() {
 		});
 
 		it('makes #routeFrom invoke callback with array element from given object', function() {
-			var route = new Route({ arr: [String] }).field('arr[0]');
-			route.routeFrom({ arr: ['elem-value'] }, function(err, value) {
+			var route = new Route({ arr: [String] }).field('array.1');
+			route.routeFrom({ array: [null, 'elem-value'] }, function(err, value) {
 				expect(err).to.not.exist;
 				expect(value).to.equal('elem-value');
 			});
