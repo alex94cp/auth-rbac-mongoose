@@ -14,6 +14,7 @@ var roleSchema = new mongoose.Schema({ name: String, privs: [String] });
 var userModel = db.model('User', userSchema);
 var roleModel = db.model('Role', roleSchema);
 
+var authMongoose = require('../lib/mongoose');
 var authRbacMongoose = require('../');
 var Route = authRbacMongoose.Route;
 
@@ -22,21 +23,16 @@ var userRoute = Route.newFrom(credRoute).field('user').linkedWith('name').gives(
 var roleRoute = Route.newFrom(userRoute).field('role').linkedWith('name').gives(roleModel);
 var privRoute = Route.newFrom(roleRoute).field('privs');
 
+var authenticateUser = authMongoose.authenticateUser(userRoute);
+var userGetRole      = authMongoose.userGetRole(roleRoute);
+var roleHasPrivilege = authMongoose.roleHasPrivilege(privRoute);
+
+sinon.stub(userRoute, 'routeFrom');
+sinon.stub(roleRoute, 'routeFrom');
+sinon.stub(privRoute, 'routeFrom');
+
 describe('authRbacMongoose', function() {
-	var authBackend;
-	before(function() {
-		sinon.stub(userRoute, 'routeFrom');
-		sinon.stub(roleRoute, 'routeFrom');
-		sinon.stub(privRoute, 'routeFrom');
-		authBackend = authRbacMongoose(userRoute, roleRoute, privRoute);
-	});
-
 	describe('authenticateUser', function() {
-		var authenticateUser;
-		before(function() {
-			authenticateUser = authBackend.authenticateUser;
-		});
-
 		beforeEach(function() {
 			userRoute.routeFrom.reset();
 		});
@@ -61,11 +57,6 @@ describe('authRbacMongoose', function() {
 	});
 
 	describe('userGetRole', function() {
-		var userGetRole;
-		before(function() {
-			userGetRole = authBackend.userGetRole;
-		});
-
 		beforeEach(function() {
 			roleRoute.routeFrom.reset();
 		});
@@ -90,11 +81,6 @@ describe('authRbacMongoose', function() {
 	});
 
 	describe('roleHasPrivilege', function() {
-		var roleHasPrivilege;
-		before(function() {
-			roleHasPrivilege = authBackend.roleHasPrivilege;
-		});
-
 		beforeEach(function() {
 			privRoute.routeFrom.reset();
 		});

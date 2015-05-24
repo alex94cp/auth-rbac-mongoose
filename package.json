@@ -30,5 +30,8 @@
     "mongoose": "^4.0.3",
     "sinon": "^1.14.1",
     "sinon-chai": "^2.7.0"
+  },
+  "dependencies": {
+    "auth-rbac": "^0.4.0"
   }
 }
