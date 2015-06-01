@@ -18,7 +18,7 @@
     "mongoose"
   ],
   "author": "Alejandro Caravaca Puchades <alex94puchades@gmail.com>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/alex94puchades/auth-rbac-mongoose/issues"
   },
